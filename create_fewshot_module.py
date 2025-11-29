@@ -10,7 +10,6 @@ sql_tool = SQLiteTool()
 schema = sql_tool.get_schema()
 
 # 2. Golden Examples (Distilled from Gemini's Success)
-# These queries are PROVEN to work on your 2017 database.
 train_examples = [
     # Q2: Top Category Summer 2017
     dspy.Example(
@@ -26,7 +25,7 @@ train_examples = [
         sql_query="SELECT ROUND(SUM(oi.UnitPrice * oi.Quantity * (1 - oi.Discount)) / COUNT(DISTINCT o.OrderID), 2) FROM orders o JOIN order_items oi ON o.OrderID = oi.OrderID WHERE o.OrderDate BETWEEN '2017-12-01' AND '2017-12-31';"
     ).with_inputs('question', 'db_schema'),
 
-    # Q6: Best Margin (The complex one)
+    # Q6: Best Margin
     dspy.Example(
         question="Who was the top customer by gross margin in 2017? Assume CostOfGoods is 70% of UnitPrice.",
         db_schema=schema,

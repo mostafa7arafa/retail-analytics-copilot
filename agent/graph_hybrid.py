@@ -245,7 +245,7 @@ def synthesizer_node(state: AgentState):
             explanation += '.'
     
     return {
-        "final_answer": parsed_answer,  # NOW PROPERLY TYPED!
+        "final_answer": parsed_answer,  
         "explanation": explanation[:300],
         "citations": unique_citations
     }

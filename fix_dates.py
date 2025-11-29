@@ -1,7 +1,7 @@
 import json
 
 data = [
-    # --- ORIGINAL QUESTIONS (Keep these to ensure no regression) ---
+    # --- ORIGINAL QUESTIONS ---
     {
         "id": "rag_policy_beverages_return_days", 
         "question": "According to the product policy, what is the return window (days) for unopened Beverages? Return an integer.", 
@@ -33,7 +33,7 @@ data = [
         "format_hint": "{customer:str, margin: float}"
     },
 
-    # --- NEW TEST CASES (Verify Robustness) ---
+    # --- NEW TEST CASES ---
     
     # 7. RAG: Testing 'catalog.md'
     {

@@ -4,6 +4,10 @@ import os
 from typing import List, Dict, Any
 from agent.graph_hybrid import app  # Import compiled graph
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 @click.command()
 @click.option('--batch', required=True, help='Path to input JSONL file')
 @click.option('--out', required=True, help='Path to output JSONL file')

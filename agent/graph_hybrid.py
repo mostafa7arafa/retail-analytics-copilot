@@ -7,6 +7,8 @@ import operator
 from agent.rag.retrieval import LocalRetriever
 from agent.tools.sqlite_tool import SQLiteTool
 from agent.dspy_signatures import Router, TextToSQL, HybridSynthesizer
+from agent.output_parser import parse_final_answer, extract_format_hint_from_question
+import json
 
 # --- 0. Configuration & Setup ---
 
@@ -138,8 +140,6 @@ def synthesizer_node(state: AgentState):
     """Combines everything into the final answer with proper type conversion."""
     print("--- SYNTHESIZER: Formatting Answer ---")
     
-    from agent.output_parser import parse_final_answer, extract_format_hint_from_question
-    import json
     
     doc_context = ""
     citations = []

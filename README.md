@@ -296,6 +296,55 @@ Instead of using DSPy's complex optimizers (which fail with small models due to 
 ```
 
 ---
+## 🛠️ Observability & Monitoring
+
+To ensure reliability and debug complex reasoning chains, this project integrates **LangSmith**. This allows us to trace the agent's decision-making process, "X-Ray" the SQL generation, and verify document retrieval.
+
+Below are traces from three different types of workflows:
+
+### 1. RAG Retrieval (Policy Q&A)
+The agent retrieves unstructured data from markdown knowledge bases to answer policy questions.
+* **Query:** "What is the return policy for unopened beverages?"
+* **Trace Insight:** The agent correctly retrieved the `product_policy.md` chunk using **BM25 keyword search** and identified the **14-day** return window for unopened items.
+
+[![View RAG Trace](https://img.shields.io/badge/LangSmith-View%20RAG%20Trace-blue?style=for-the-badge&logo=chainlink)](https://smith.langchain.com/public/5006c1f4-df83-4ee9-a658-9c164e50fd82/r)
+
+> 🔍 **Deep Dive:** [Click here to explore the retrieval trace](https://smith.langchain.com/public/5006c1f4-df83-4ee9-a658-9c164e50fd82/r) to see the exact document chunks ranked by the BM25 retriever.
+
+![RAG Trace](assets/trace_rag_policy.png)
+
+---
+
+### 2. Complex SQL Generation
+The agent can generate precise SQL queries to answer specific data questions without needing external documentation.
+
+* **Query:** "How many employees are located in the USA? Return an integer."
+* **Trace Insight:** The router selects the `sql` path (skipping retrieval). The agent then constructs a query using `COUNT(DISTINCT ...)` and `JOIN` operations to filter records by country and year.
+
+[![View SQL Trace](https://img.shields.io/badge/LangSmith-View%20SQL%20Trace-blue?style=for-the-badge&logo=chainlink)](https://smith.langchain.com/public/475b052e-0d72-4fbf-a4b2-f3b391f76220/r)
+
+> 🔍 **Deep Dive:** [Click here to explore the SQL execution trace](https://smith.langchain.com/public/475b052e-0d72-4fbf-a4b2-f3b391f76220/r) to see how the agent formulated the query and executed it against the database.
+
+![SQL Trace](assets/trace_sql_margin.png)
+
+---
+
+### 3. Hybrid Reasoning (RAG + SQL)
+The agent handles complex queries that require both unstructured knowledge (definitions, custom date ranges) and structured database querying.
+
+* **Query:** "Using the AOV definition from the KPI docs, what was the Average Order Value during 'Winter Classics 2017'?"
+* **Trace Insight:**
+    1.  **Router:** Identifies the need for external info (`hybrid` route).
+    2.  **Retrieval:** Fetches the **KPI definition** for AOV and the **Marketing Calendar** to define "Winter Classics" as specifically *December 2017* (not just general winter).
+    3.  **SQL Generation:** detailed SQL query using the specific date range (`2017-12-01` to `2017-12-31`) and formula found in the docs.
+
+[![View Hybrid Trace](https://img.shields.io/badge/LangSmith-View%20Hybrid%20Trace-blue?style=for-the-badge&logo=chainlink)](https://smith.langchain.com/public/5cb65de2-3545-4917-9984-1c7d4d193682/r)
+
+> 🔍 **Deep Dive:** [Click here to explore the hybrid trace](https://smith.langchain.com/public/5cb65de2-3545-4917-9984-1c7d4d193682/r) and observe how the `retriever` node passes context to the `sql_gen` node.
+
+![Hybrid Trace](assets/trace_hybrid_winter.png)
+
+---
 
 ## ⚠️ Known Issues & Limitations
 

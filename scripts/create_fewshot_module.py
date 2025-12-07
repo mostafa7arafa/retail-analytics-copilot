@@ -35,10 +35,10 @@ train_examples = [
 
 # 3. Run the Optimizer
 print("🚀 Optimizing TextToSQL module with Golden Gemini Data... (Takes ~2 mins)")
-# increased max_bootstrapped_demos to 3 to capture more nuance
+
 teleprompter = BootstrapFewShot(metric=lambda x, y: True, max_bootstrapped_demos=3) 
 optimized_sql_gen = teleprompter.compile(dspy.ChainOfThought(TextToSQL), trainset=train_examples)
 
 # 4. Save
-optimized_sql_gen.save("agent/optimized_sql_module.json")
+optimized_sql_gen.save("../agent/optimized_sql_module.json")
 print("✅ Optimization complete! Saved to agent/optimized_sql_module.json")

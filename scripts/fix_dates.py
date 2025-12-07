@@ -65,7 +65,7 @@ data = [
 ]
 
 # Write cleanly formatted JSONL
-with open('sample_questions_hybrid_eval.jsonl', 'w', encoding='utf-8') as f:
+with open('../benchmark_dataset.jsonl', 'w', encoding='utf-8') as f:
     for entry in data:
         f.write(json.dumps(entry) + "\n")
 

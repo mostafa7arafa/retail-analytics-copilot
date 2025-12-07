@@ -7,7 +7,7 @@ def save_graph_syntax():
         graph_syntax = app.get_graph().draw_mermaid()
         
         # Save to a text file
-        output_file = "assets/graph_architecture.mmd"
+        output_file = "../assets/graph_architecture.mmd"
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(graph_syntax)
             

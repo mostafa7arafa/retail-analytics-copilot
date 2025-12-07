@@ -18,6 +18,7 @@ class TextToSQL(dspy.Signature):
     - Date format: strftime('%Y-%m', OrderDate) = '1997-06'.
     - Revenue: SUM(UnitPrice * Quantity * (1 - Discount)).
     - Margin: SUM((UnitPrice * 0.3) * Quantity * (1 - Discount)).
+    - LIMIT: If question asks for 'Top 3', use 'LIMIT 3'.
     - Syntax: Check parenthesis carefully. Example: ROUND(SUM(...), 2)
     """
     question = dspy.InputField()

@@ -1,3 +1,6 @@
+import os
+os.environ["DSP_CACHEBOOL"] = "False"
+
 import dspy
 from typing import TypedDict, List, Annotated, Literal, Any
 from langgraph.graph import StateGraph, END
@@ -97,27 +100,41 @@ def sql_generation_node(state: AgentState):
     
     schema_context = sql_tool.get_schema()
     
-    # 1. START CONTEXT with the Question
-    question_ctx = f"Question: {state['question']}\n"
+    combined_input = state['question']
     
-    # 2. INJECT RAG CONTEXT (The Missing Link!)
-    # If we have docs, the SQL generator needs to know definitions (dates, formulas)
+    # Inject RAG Context if available
     if state.get('retrieved_docs'):
-        question_ctx += "\nContext from Documents (Use these dates/definitions):"
+        combined_input += "\n\n--- RELEVANT KNOWLEDGE ---"
         for d in state['retrieved_docs']:
-            question_ctx += f"\n- {d['content']}"
+            combined_input += f"\n- {d['content']}"
     
-    # 3. INJECT PREVIOUS ERROR (Repair Loop)
+    # Inject Previous Error if available
     if state.get('sql_error'):
-        question_ctx += f"\n\nERROR IN PREVIOUS QUERY: {state['sql_error']}\nFix the syntax."
+        combined_input += f"\n\n--- PREVIOUS ERROR ---\nThe query failed: {state['sql_error']}\nPlease correct the SQL syntax."
+
+    clean_sql = "SELECT 1" # Default safety
 
     try:
-        # Uses 'db_schema' to match signature
-        pred = sql_generator(question=question_ctx, db_schema=schema_context)
+        # Attempt 1: Try the Optimized Module
+        pred = sql_generator(question=combined_input, db_schema=schema_context)
         clean_sql = pred.sql_query.replace("```sql", "").replace("```", "").strip()
+        print("   ✅ Generated via Optimized Module")
+        
     except Exception as e:
-        print(f"⚠️ SQL Gen Error: {e}")
-        clean_sql = "SELECT 1"
+        print(f"   ⚠️ Optimized Module Failed: {e}")
+        
+        # --- CHANGE 2: FALLBACK MECHANISM ---
+        # If the optimized module is too strict or crashes, try a fresh Vanilla Predictor.
+        # This saves you from the "SELECT 1" death spiral.
+        try:
+            print("   🔄 Attempting Fallback (Vanilla DSPy)...")
+            fallback_gen = dspy.Predict(TextToSQL)
+            pred = fallback_gen(question=combined_input, db_schema=schema_context)
+            clean_sql = pred.sql_query.replace("```sql", "").replace("```", "").strip()
+            print("   ✅ Generated via Fallback")
+        except Exception as e2:
+            print(f"   ❌ Fallback Failed: {e2}")
+            clean_sql = "SELECT 1"
         
     return {"sql_query": clean_sql}
 

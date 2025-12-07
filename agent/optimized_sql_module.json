@@ -6,7 +6,7 @@
       {
         "question": "During 'Summer Beverages 2017' campaign, which product category had the highest total quantity sold across ALL categories?",
         "db_schema": "Tables: orders, order_items, products, categories",
-        "sql_query": "SELECT cat.CategoryName, SUM(oi.Quantity) AS TotalQuantitySold FROM orders AS o JOIN order_items AS oi ON o.OrderID = oi.OrderID JOIN products AS p ON oi.ProductID = p.ProductID JOIN categories AS cat ON p.CategoryID = cat.CategoryID WHERE strftime('%Y-%m', o.OrderDate) IN ('2017-06', '2017-07', '2017-08') GROUP BY cat.CategoryName ORDER BY TotalQuantitySold DESC LIMIT 1;"
+        "sql_query": "SELECT cat.CategoryName, SUM(oi.Quantity) AS TotalQuantitySold FROM orders AS o JOIN order_items AS oi ON o.OrderID = oi.OrderID JOIN products AS p ON oi.ProductID = p.ProductID JOIN categories AS cat ON p.CategoryID = cat.CategoryID WHERE strftime('%Y-%m', o.OrderDate) IN ('2017-06') GROUP BY cat.CategoryName ORDER BY TotalQuantitySold DESC LIMIT 1;"
       },
       {
         "question": "What was the Average Order Value during 'Winter Classics 2017' (December)?",

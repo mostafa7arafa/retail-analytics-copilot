@@ -445,7 +445,7 @@ python run_agent_hybrid.py --batch benchmark_dataset.jsonl --out outputs_hybrid.
 
 Built by **Mostafa Arafa**  
 📧 [a.mostafa190@gmail.com](mailto:a.mostafa190@gmail.com)  
-🔗 [LinkedIn](https://linkedin.com/in/mostafa-arafa) | [GitHub](https://github.com/mostafa7arafa)
+🔗 [LinkedIn](https://linkedin.com/in/mostafa-arafa-ai-developer) | [GitHub](https://github.com/mostafa7arafa)
 
 **Star ⭐ this repo if you found it useful!**
 
